@@ -1790,47 +1790,57 @@ nginx_site_configure_webroot_index() {
             local final_root_source=""
             if [ -n "${!site_root_site_var}" ]; then
                 final_root_source="site_specific"
-            elif [ -n "${!site_root_global_var}" ]; then
-                final_root_source="site_global"
             elif [ -n "${!nginx_site_var}" ]; then
                 final_root_source="nginx_site"
+            elif [ -n "${!site_root_global_var}" ]; then
+                final_root_source="site_global"
             else
                 final_root_source="nginx_global"
             fi
-            # Always export and persist SITE/NGINX webroot and user/group values so downstream images/tools can rely on consistent names.
-            export SITE_ROOT="${final_root}"
-            export "SITE_${_sitename^^}_ROOT"="${final_root}"
-            export NGINX_WEBROOT="${final_root}"
-            export "NGINX_SITE_${_sitename^^}_WEBROOT"="${final_root}"
+
+            local site_count=0
+            if [ -n "${NGINX_SITE_ENABLED}" ]; then
+                for _s in $(echo "${NGINX_SITE_ENABLED}" | tr ',' '\n'); do
+                    if [ -n "${_s// }" ]; then site_count=$((site_count+1)); fi
+                done
+            fi
 
             local site_user_var="SITE_${_sitename^^}_USER"
             local site_group_var="SITE_${_sitename^^}_GROUP"
+
+            export "SITE_${_sitename^^}_ROOT"="${final_root}"
+            export "NGINX_SITE_${_sitename^^}_WEBROOT"="${final_root}"
+
             if [ -n "${NGINX_USER:-}" ]; then
-                export SITE_USER="${NGINX_USER}"
                 export "${site_user_var}"="${NGINX_USER}"
-                export NGINX_USER="${NGINX_USER}"
                 export "NGINX_SITE_${_sitename^^}_USER"="${NGINX_USER}"
             fi
             if [ -n "${NGINX_GROUP:-}" ]; then
-                export SITE_GROUP="${NGINX_GROUP}"
                 export "${site_group_var}"="${NGINX_GROUP}"
-                export NGINX_GROUP="${NGINX_GROUP}"
                 export "NGINX_SITE_${_sitename^^}_GROUP"="${NGINX_GROUP}"
             fi
 
             local _env_args=()
-            _env_args+=("SITE_ROOT=${final_root}")
-            _env_args+=("SITE_${_sitename^^}_ROOT=${final_root}")
-            _env_args+=("NGINX_WEBROOT=${final_root}")
-            _env_args+=("NGINX_SITE_${_sitename^^}_WEBROOT=${final_root}")
-            if [ -n "${NGINX_USER:-}" ]; then _env_args+=("NGINX_USER=${NGINX_USER}"); fi
-            if [ -n "${NGINX_GROUP:-}" ]; then _env_args+=("NGINX_GROUP=${NGINX_GROUP}"); fi
-            if [ -n "${NGINX_USER:-}" ]; then _env_args+=("NGINX_SITE_${_sitename^^}_USER=${NGINX_USER}"); fi
-            if [ -n "${NGINX_GROUP:-}" ]; then _env_args+=("NGINX_SITE_${_sitename^^}_GROUP=${NGINX_GROUP}"); fi
-            if [ -n "${SITE_USER:-}" ]; then _env_args+=("SITE_USER=${SITE_USER}"); fi
-            if [ -n "${!site_user_var:-}" ]; then _env_args+=("${site_user_var}=${!site_user_var}"); fi
-            if [ -n "${SITE_GROUP:-}" ]; then _env_args+=("SITE_GROUP=${SITE_GROUP}"); fi
-            if [ -n "${!site_group_var:-}" ]; then _env_args+=("${site_group_var}=${!site_group_var}"); fi
+            _env_args+=("sites/${_sitename}/SITE_${_sitename^^}_ROOT=${final_root}")
+            _env_args+=("sites/${_sitename}/NGINX_SITE_${_sitename^^}_WEBROOT=${final_root}")
+            if [ -n "${NGINX_USER:-}" ]; then _env_args+=("sites/${_sitename}/NGINX_SITE_${_sitename^^}_USER=${NGINX_USER}"); fi
+            if [ -n "${NGINX_GROUP:-}" ]; then _env_args+=("sites/${_sitename}/NGINX_SITE_${_sitename^^}_GROUP=${NGINX_GROUP}"); fi
+            if [ -n "${!site_user_var:-}" ]; then _env_args+=("sites/${_sitename}/${site_user_var}=${!site_user_var}"); fi
+            if [ -n "${!site_group_var:-}" ]; then _env_args+=("sites/${_sitename}/${site_group_var}=${!site_group_var}"); fi
+
+            if [ "${site_count}" -le 1 ]; then
+                export SITE_ROOT="${final_root}"
+                export NGINX_WEBROOT="${final_root}"
+                if [ -n "${NGINX_USER:-}" ]; then export SITE_USER="${NGINX_USER}"; fi
+                if [ -n "${NGINX_GROUP:-}" ]; then export SITE_GROUP="${NGINX_GROUP}"; fi
+
+                _env_args+=("SITE_ROOT=${final_root}")
+                _env_args+=("NGINX_WEBROOT=${final_root}")
+                if [ -n "${NGINX_USER:-}" ]; then _env_args+=("NGINX_USER=${NGINX_USER}"); fi
+                if [ -n "${NGINX_GROUP:-}" ]; then _env_args+=("NGINX_GROUP=${NGINX_GROUP}"); fi
+                if [ -n "${SITE_USER:-}" ]; then _env_args+=("SITE_USER=${SITE_USER}"); fi
+                if [ -n "${SITE_GROUP:-}" ]; then _env_args+=("SITE_GROUP=${SITE_GROUP}"); fi
+            fi
 
             _container_run_env "${_env_args[@]}"
         fi
