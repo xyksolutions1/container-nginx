@@ -1231,7 +1231,7 @@ nginx_site_configure_headers() {
             print_debug "[configure_site/${_sitename}] [headers] No per-site headers found. Skipping."
             return
         fi
-        printf "%b" "${houtput}" | silent tee "${NGINX_CONFIG_PATH%/}"/sites.enabled/${_sitename}/location-pre/10-headers.conf
+        printf "%b" "${houtput}" | write_file "${NGINX_CONFIG_PATH%/}"/sites.enabled/${_sitename}/location-pre/10-headers.conf
     fi
 }
 
@@ -1941,7 +1941,6 @@ nginx_post_init() {
 nginx_run() {
     if [ "${NGINX_CONFIG_PATH%/}" != "/etc/nginx" ]; then
         local nginx_prefix="-p ${NGINX_CONFIG_PATH%/}"
-        local config_deviated
     fi
 
     if [ "${NGINX_CONFIG_PATH%/}/${NGINX_CONFIG_FILE}" != "/etc/nginx/server.conf" ]; then
