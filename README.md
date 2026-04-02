@@ -154,7 +154,7 @@ If you want to add custom configuration to any of the files, create a folder in 
 
 ```bash
 location /images/ {
-    root /var/www/media;
+    root /www/media;
     expires 1y;
     add_header Cache-Control "public, immutable";
     access_log off;
@@ -167,7 +167,7 @@ location /images/ {
 
 ```bash
 location ~* \.(css|js)$ {
-    alias /var/www/assets/;
+    alias /www/assets/;
     expires 30d;
     add_header Cache-Control "public";
 }
@@ -212,7 +212,7 @@ Below is the complete list of available options that can be used to customize yo
 | `NGINX_MIME_TYPES_PATH`                  | Path where mime types are written                                             | `${NGINX_CONFIG_PATH%/}/`   |      | x        |
 |                                          |                                                                               | `${NGINX_CONFIG_FILE%/}.d/` |      | x        |
 | `NGINX_MIME_TYPES_FILE`                  | Mime types filename                                                           | `mime.types`                |      |          |
-| `NGINX_MIME_TYPE_DEFAULT`                | Defautl Mime Type                                                             | `application/octet-stream`  |      | x        |
+| `NGINX_MIME_TYPE_DEFAULT`                | Default Mime Type                                                             | `application/octet-stream`  |      | x        |
 | `NGINX_ENABLE_APPLICATION_CONFIGURATION` | Don't automatically setup /etc/nginx/sites.available files                    |                             |      |          |
 |                                          | Useful for volume mapping/overriding                                          | `TRUE`                      | x    |          |
 | `NGINX_ENABLE_METRICS`                   | Enable monitoring endpoint on port 127.0.0.1:73                               | `TRUE`                      |      |          |
