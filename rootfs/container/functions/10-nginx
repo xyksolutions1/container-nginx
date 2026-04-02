@@ -616,6 +616,7 @@ nginx_server_configure_blockbots() {
 
         render_template /container/data/nginx/templates/server/server-botblocker.template \
                             "${NGINX_CONFIG_PATH%/}"/"${NGINX_CONFIG_FILE}".d/http/botblocker.conf
+        rm -rf "${NGINX_CONFIG_PATH%/}"/"${NGINX_CONFIG_FILE}".d/http/hash-server_names.conf
         else
             local rendered_template="${NGINX_CONFIG_PATH%/}"/"${NGINX_CONFIG_FILE}".d/http/botblocker.conf
             silent rm -f "${rendered_template}"
