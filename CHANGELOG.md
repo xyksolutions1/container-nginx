@@ -1,3 +1,12 @@
+## 8.0.3 2026-04-02 <code at nfastack dot com>
+
+   ### Changed
+      - Fix BLOCKBOTS rendering hash configuration twice
+      - Authentication with LLNG Fix
+      - Convert to write_file
+      - Multisite webroot and index environment determination fix
+
+
 ## 8.0.2 2026-03-24 <code at nfastack dot com>
 
    ### Added
