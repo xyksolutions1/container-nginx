@@ -1822,12 +1822,12 @@ nginx_site_configure_webroot_index() {
             fi
 
             local _env_args=()
-            _env_args+=("sites/${_sitename}/SITE_${_sitename^^}_ROOT=${final_root}")
-            _env_args+=("sites/${_sitename}/NGINX_SITE_${_sitename^^}_WEBROOT=${final_root}")
-            if [ -n "${NGINX_USER:-}" ]; then _env_args+=("sites/${_sitename}/NGINX_SITE_${_sitename^^}_USER=${NGINX_USER}"); fi
-            if [ -n "${NGINX_GROUP:-}" ]; then _env_args+=("sites/${_sitename}/NGINX_SITE_${_sitename^^}_GROUP=${NGINX_GROUP}"); fi
-            if [ -n "${!site_user_var:-}" ]; then _env_args+=("sites/${_sitename}/${site_user_var}=${!site_user_var}"); fi
-            if [ -n "${!site_group_var:-}" ]; then _env_args+=("sites/${_sitename}/${site_group_var}=${!site_group_var}"); fi
+            _env_args+=("SITE_${_sitename^^}_ROOT=${final_root}")
+            _env_args+=("NGINX_SITE_${_sitename^^}_WEBROOT=${final_root}")
+            if [ -n "${NGINX_USER:-}" ]; then _env_args+=("NGINX_SITE_${_sitename^^}_USER=${NGINX_USER}"); fi
+            if [ -n "${NGINX_GROUP:-}" ]; then _env_args+=("NGINX_SITE_${_sitename^^}_GROUP=${NGINX_GROUP}"); fi
+            if [ -n "${!site_user_var:-}" ]; then _env_args+=("${site_user_var}=${!site_user_var}"); fi
+            if [ -n "${!site_group_var:-}" ]; then _env_args+=("${site_group_var}=${!site_group_var}"); fi
 
             if [ "${site_count}" -le 1 ]; then
                 export SITE_ROOT="${final_root}"
@@ -1842,6 +1842,20 @@ nginx_site_configure_webroot_index() {
                 if [ -n "${SITE_USER:-}" ]; then _env_args+=("SITE_USER=${SITE_USER}"); fi
                 if [ -n "${SITE_GROUP:-}" ]; then _env_args+=("SITE_GROUP=${SITE_GROUP}"); fi
             fi
+
+            # Also write a per-site state file so site variables are persisted
+            # on disk (one file per site) instead of embedding slashes in env names.
+            state_dir="/container/state/env/sites"
+            mkdir -p "${state_dir%/}" 2>/dev/null || true
+            site_state_file="${state_dir%/}/${_sitename}"
+            {
+                echo "SITE_${_sitename^^}_ROOT='${final_root}'"
+                echo "NGINX_SITE_${_sitename^^}_WEBROOT='${final_root}'"
+                if [ -n "${NGINX_USER:-}" ]; then echo "NGINX_SITE_${_sitename^^}_USER='${NGINX_USER}'"; fi
+                if [ -n "${NGINX_GROUP:-}" ]; then echo "NGINX_SITE_${_sitename^^}_GROUP='${NGINX_GROUP}'"; fi
+                if [ -n "${!site_user_var:-}" ]; then echo "${site_user_var}='${!site_user_var}'"; fi
+                if [ -n "${!site_group_var:-}" ]; then echo "${site_group_var}='${!site_group_var}'"; fi
+            } | write_file "${site_state_file}":644
 
             _container_run_env "${_env_args[@]}"
         fi
