@@ -1,3 +1,9 @@
+## 8.0.5 2026-04-14 <code at nfastack dot com>
+
+   ### Changed
+      - Support writing fastcgi, scgi, uwsgi params under PROXY mode
+
+
 ## 8.0.4 2026-04-14 <code at nfastack dot com>
 
    ### Added

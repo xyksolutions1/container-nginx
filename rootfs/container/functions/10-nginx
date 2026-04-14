@@ -867,6 +867,9 @@ nginx_site_configure_authentication() {
                 call nginx_authentication_configure_ldap "${_sitename}" "${allow_defaults}"
             ;;
             "llng")
+                local enable_fastcgi_var="NGINX_SITE_${_sitename^^}_ENABLE_FASTCGI_PARAMS"
+                eval "export ${enable_fastcgi_var}='TRUE'"
+                print_debug "[configure_site/${_sitename}] [authentication] LLNG requested — forcing ${enable_fastcgi_var}=TRUE"
                 call nginx_authentication_configure_llng "${_sitename}" "${allow_defaults}"
             ;;
             *)
@@ -2040,6 +2043,9 @@ nginx_site_enable() {
                                                 deny_hidden_files \
                                                 disable_log_favicon \
                                                 disable_log_robots \
+                                                fastcgi \
+                                                scgi \
+                                                uwsgi \
                                             ; do
                         call nginx_site_configure_"${proxy_site_config}" "${_sitename}" "${allow_defaults,,}"
                     done
