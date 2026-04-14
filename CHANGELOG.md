@@ -1,10 +1,11 @@
-## 8.0.4pre 
+## 8.0.4 2026-04-14 <code at nfastack dot com>
 
    ### Added
-      - Nginx 1.129.8
+      - Nginx 1.30.0
 
    ### Changed
       - Properly export site variables for runtime environments
+
 
 ## 8.0.3 2026-04-02 <code at nfastack dot com>
 
