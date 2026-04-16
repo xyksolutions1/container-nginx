@@ -1,3 +1,9 @@
+## 8.0.6 2026-04-16 <code at nfastack dot com>
+
+   ### Changed
+      - Fix up issues relating to multiple sites being served with runtime environment variables
+
+
 ## 8.0.5 2026-04-14 <code at nfastack dot com>
 
    ### Changed
