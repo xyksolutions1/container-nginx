@@ -1850,12 +1850,12 @@ nginx_site_configure_webroot_index() {
             mkdir -p "${state_dir%/}" 2>/dev/null || true
             site_state_file="${state_dir%/}/${_sitename}"
             {
-                echo "${_sitename}/SITE_${_sitename^^}_ROOT='${final_root}'"
-                echo "${_sitename}/NGINX_SITE_${_sitename^^}_WEBROOT='${final_root}'"
-                if [ -n "${NGINX_USER:-}" ]; then echo "${_sitename}/NGINX_SITE_${_sitename^^}_USER='${NGINX_USER}'"; fi
-                if [ -n "${NGINX_GROUP:-}" ]; then echo "${_sitename}/NGINX_SITE_${_sitename^^}_GROUP='${NGINX_GROUP}'"; fi
-                if [ -n "${!site_user_var:-}" ]; then echo "${_sitename}/${site_user_var}='${!site_user_var}'"; fi
-                if [ -n "${!site_group_var:-}" ]; then echo "${_sitename}/${site_group_var}='${!site_group_var}'"; fi
+                echo "SITE_${_sitename^^}_ROOT='${final_root}'"
+                echo "NGINX_SITE_${_sitename^^}_WEBROOT='${final_root}'"
+                if [ -n "${NGINX_USER:-}" ]; then echo "NGINX_SITE_${_sitename^^}_USER='${NGINX_USER}'"; fi
+                if [ -n "${NGINX_GROUP:-}" ]; then echo "NGINX_SITE_${_sitename^^}_GROUP='${NGINX_GROUP}'"; fi
+                if [ -n "${!site_user_var:-}" ]; then echo "${site_user_var}='${!site_user_var}'"; fi
+                if [ -n "${!site_group_var:-}" ]; then echo "${site_group_var}='${!site_group_var}'"; fi
             } | write_file "${site_state_file}":644
 
             _container_run_env "${_env_args[@]}"
