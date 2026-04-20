@@ -1,3 +1,9 @@
+## 8.0.7 2026-04-20 <code at nfastack dot com>
+
+   ### Changed
+      - NGINX_AUTHENTICATION_TYPE=LLNG handler fixes
+
+
 ## 8.0.6 2026-04-16 <code at nfastack dot com>
 
    ### Changed

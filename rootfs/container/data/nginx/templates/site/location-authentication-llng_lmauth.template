@@ -9,7 +9,7 @@ location = /lmauth {
     fastcgi_param REMOTE_PORT {{_auth_handler_port}};
     fastcgi_pass_request_body  off;
     fastcgi_param CONTENT_LENGTH "";
-    fastcgi_param HOST $http_host;
+    fastcgi_param HTTP_HOST $http_host;
     #fastcgi_param X_ORIGINAL_URI  $original_uri;
     fastcgi_param UNIQUE_ID $request_id;
     fastcgi_buffer_size {{_auth_fastcgi_buffer_size}};
