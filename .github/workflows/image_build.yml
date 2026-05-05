@@ -21,7 +21,7 @@ jobs:
           - core
           - faflopza
           - faflopzaze
-    uses: nfrastack/gha/.github/workflows/container-build_multi.yml@main
+#  DISABLED by dup-sanitise Phase 3: uses: nfrastack/gha/.github/workflows/container-build_multi.yml@main
     with:
       base_image: "ghcr.io/nfrastack/container-base"
       distro: ${{ matrix.build.distro }}
